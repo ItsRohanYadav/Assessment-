@@ -1,1 +1,55 @@
 # Assessment-
+
+CREATE TABLE Users (
+    UserID INTEGER PRIMARY KEY,
+    Username TEXT NOT NULL,
+    PhoneNumber TEXT UNIQUE NOT NULL,
+    ProfilePicURL TEXT,
+    StatusMessage TEXT,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE Chats (
+    ChatID INTEGER PRIMARY KEY,
+    ChatName TEXT,
+    IsGroupChat INTEGER DEFAULT 0,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE UserChats (
+    UserChatID INTEGER PRIMARY KEY,
+    UserID INTEGER,
+    ChatID INTEGER,
+    JoinedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (ChatID) REFERENCES Chats(ChatID)
+);
+CREATE TABLE Messages (
+    MessageID INTEGER PRIMARY KEY,
+    ChatID INTEGER,
+    SenderID INTEGER,
+    Content TEXT,
+    IsEdited INTEGER DEFAULT 0,
+    SentAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ChatID) REFERENCES Chats(ChatID),
+    FOREIGN KEY (SenderID) REFERENCES Users(UserID)
+);
+CREATE TABLE MediaAttachments (
+    MediaID INTEGER PRIMARY KEY,
+    MessageID INTEGER,
+    MediaType TEXT,
+    MediaURL TEXT NOT NULL,
+    UploadedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (MessageID) REFERENCES Messages(MessageID)
+);
+CREATE TABLE MessageEdits (
+    EditID INTEGER PRIMARY KEY,
+    MessageID INTEGER,
+    OldContent TEXT,
+    EditedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (MessageID) REFERENCES Messages(MessageID)
+);
+CREATE TABLE DisappearingMessages (
+    DisappearID INTEGER PRIMARY KEY,
+    MessageID INTEGER,
+    DisappearAfterSeconds INTEGER,
+    FOREIGN KEY (MessageID) REFERENCES Messages(MessageID)
+);
